@@ -1,6 +1,8 @@
+import 'package:flutter_bar_chart_horizontal_scroll/cubit/bar_chart_cubit.dart';
 import 'package:flutter_bar_chart_horizontal_scroll/data.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BarChartWidget extends StatefulWidget {
   const BarChartWidget({super.key});
@@ -10,7 +12,6 @@ class BarChartWidget extends StatefulWidget {
 }
 
 class BarChartWidgetState extends State<BarChartWidget> {
-  static const shadowOpacity = 0.2;
   int touchedIndex = -1;
 
   @override
@@ -20,94 +21,116 @@ class BarChartWidgetState extends State<BarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BarChart(
-      swapAnimationDuration: const Duration(milliseconds: 150), // Optional
-      swapAnimationCurve: Curves.linear, //
-      BarChartData(
-        maxY: 20,
-        minY: -20,
-        // groupsSpace: 30,
-        alignment: BarChartAlignment.spaceEvenly,
-        barTouchData: BarTouchData(
-          handleBuiltInTouches: false,
-          touchCallback: (FlTouchEvent event, barTouchResponse) {
-            if (!event.isInterestedForInteractions ||
-                barTouchResponse == null ||
-                barTouchResponse.spot == null) {
-              setState(() {
-                touchedIndex = -1;
-              });
-              return;
-            }
-            final rodIndex = barTouchResponse.spot!.touchedRodDataIndex;
-            if (isShadowBar(rodIndex)) {
-              setState(() {
-                touchedIndex = -1;
-              });
-              return;
-            }
-            setState(() {
-              touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
-            });
-          },
-        ),
-        titlesData: FlTitlesData(
-          show: true,
-          topTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: false,
-            ),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 32,
-              getTitlesWidget: bottomTitles,
-            ),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: leftTitles,
-              // interval: 5,
-              reservedSize: 42,
-            ),
-          ),
-          rightTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: false,
-            ),
-          ),
-        ),
-        gridData: FlGridData(
-          show: true,
-          checkToShowHorizontalLine: (value) => value % 5 == 0,
-          drawVerticalLine: false,
-          getDrawingHorizontalLine: (value) {
-            if (value == 0) {
-              return FlLine(
-                color: Colors.black.withOpacity(0.1),
-                strokeWidth: 3,
-              );
-            }
-            return FlLine(
-              color: Colors.transparent,
-              strokeWidth: 0.8,
-            );
-          },
-        ),
-        borderData: FlBorderData(
-          show: false,
-        ),
-        barGroups: barChartdata.entries
-            .map(
-              (e) => generateGroup(
-                e.key,
-                e.value[0],
+    return BlocBuilder<BarChartCubit, BarChartState>(
+      builder: (context, state) {
+        return BarChart(
+          swapAnimationDuration: const Duration(milliseconds: 150), // Optional
+          swapAnimationCurve: Curves.linear, //
+          BarChartData(
+            maxY: 20,
+            minY: -20,
+            // groupsSpace: 30,
+            alignment: BarChartAlignment.spaceBetween,
+            barTouchData: BarTouchData(
+              handleBuiltInTouches: false,
+              touchCallback: (FlTouchEvent event, barTouchResponse) {
+                if (barTouchResponse == null ||
+                    barTouchResponse.spot == null ||
+                    event is! FlTapUpEvent) {
+                  setState(() {
+                    touchedIndex = -1;
+                  });
+                  context.read<BarChartCubit>().showTooltip(
+                        show: false,
+                      );
+                  return;
+                }
+
+                /// print the position of the bar in the x axis
+                // print(barTouchResponse.spot!.offset.dx);
+
+                /// print the position of the bar in the y axis
+                // print(barTouchResponse.spot!.offset.dy);
+
+                context.read<BarChartCubit>().showTooltip(
+                      show: true,
+                      x: barTouchResponse.spot!.offset.dx,
+                      y: barTouchResponse.spot!.offset.dy,
+                      maxYValue: barTouchResponse.spot?.touchedRodData.toY,
+                    );
+                setState(() {
+                  touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
+                });
+              },
+              touchTooltipData: BarTouchTooltipData(
+                getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  var tooltipX = rod.toY;
+                  var tooltipY = group.x;
+
+                  return null;
+                },
               ),
-            )
-            .toList(),
-      ),
+            ),
+
+            titlesData: FlTitlesData(
+              show: true,
+              topTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: false,
+                ),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 32,
+                  getTitlesWidget: bottomTitles,
+                ),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: leftTitles,
+                  // interval: 5,
+                  reservedSize: 50,
+                ),
+              ),
+              rightTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: false,
+                ),
+              ),
+            ),
+            gridData: FlGridData(
+              show: true,
+              checkToShowHorizontalLine: (value) => value % 5 == 0,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine: (value) {
+                if (value == 0) {
+                  return FlLine(
+                    color: Colors.black.withOpacity(0.1),
+                    strokeWidth: 3,
+                  );
+                }
+                return FlLine(
+                  color: Colors.transparent,
+                  strokeWidth: 0.8,
+                );
+              },
+            ),
+            borderData: FlBorderData(
+              show: false,
+            ),
+            barGroups: barChartdata.entries
+                .map(
+                  (e) => generateGroup(
+                    e.key,
+                    e.value[0],
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
     );
   }
 
@@ -177,7 +200,7 @@ class BarChartWidgetState extends State<BarChartWidget> {
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 16,
+      space: 20,
       child: Text(
         text,
         style: style,
@@ -214,6 +237,4 @@ class BarChartWidgetState extends State<BarChartWidget> {
       ],
     );
   }
-
-  bool isShadowBar(int rodIndex) => rodIndex == 1;
 }

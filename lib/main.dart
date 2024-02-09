@@ -1,7 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter_bar_chart_horizontal_scroll/data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bar_chart_widget.dart';
+import 'cubit/bar_chart_cubit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,15 +16,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return BlocProvider(
+      create: (context) => BarChartCubit(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.dark,
+        home: const BarChartScroll(title: 'Flutter Demo Home Page'),
+        debugShowCheckedModeBanner: false,
       ),
-      themeMode: ThemeMode.dark,
-      home: const BarChartScroll(title: 'Flutter Demo Home Page'),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -35,6 +42,19 @@ class BarChartScroll extends StatefulWidget {
 }
 
 class _BarChartScrollState extends State<BarChartScroll> {
+  late ScrollController _scrollController;
+
+  double scrollXPosition = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      scrollXPosition = _scrollController.offset;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,20 +79,103 @@ class _BarChartScrollState extends State<BarChartScroll> {
               ],
             ),
           ),
-          Stack(
-            children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+          BlocBuilder<BarChartCubit, BarChartState>(
+            builder: (context, state) {
+              return Stack(
                 clipBehavior: Clip.none,
-                padding: const EdgeInsets.only(top: 10, right: 10),
-                child: Container(
-                  width: 40 * barChartdata.length.toDouble(),
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  margin: const EdgeInsets.only(top: 30),
-                  child: const BarChartWidget(),
-                ),
-              ),
-            ],
+                children: [
+                  SingleChildScrollView(
+                    controller: _scrollController,
+                    scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.none,
+                    padding: const EdgeInsets.only(top: 10, right: 60),
+                    child: Container(
+                      width: 40 * barChartdata.length.toDouble(),
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      margin: const EdgeInsets.only(top: 30),
+                      child: const BarChartWidget(),
+                    ),
+                  ),
+                  Positioned(
+                    left: scrollXPosition > 0
+                        ? state.tooltipXPosition - scrollXPosition
+                        : state.tooltipXPosition,
+                    top: state.maxYValue > 0
+                        ? state.tooltipYPosition - 22
+                        : state.tooltipYPosition + 45,
+                    child: IgnorePointer(
+                      ignoring: true,
+                      child: Visibility(
+                        visible: state.showTooltip,
+                        child: ClipRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 5,
+                              sigmaY: 5,
+                            ),
+                            child: Container(
+                              width: 126,
+                              height: 58,
+                              color: Colors.black.withOpacity(0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: scrollXPosition > 0
+                        ? state.tooltipXPosition - scrollXPosition
+                        : state.tooltipXPosition,
+                    top: state.maxYValue > 0
+                        ? state.tooltipYPosition - 22
+                        : state.tooltipYPosition + 45,
+                    child: IgnorePointer(
+                      ignoring: true,
+                      child: Visibility(
+                        visible: state.showTooltip,
+                        child: Container(
+                          width: 126,
+                          height: 58,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(6)),
+                          child: const FittedBox(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Total Units : 0.0%",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                Text(
+                                  "Total Cost : 0.0%",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                                Text(
+                                  "Total Revenue : 0.0%",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
           ),
         ],
       ),
