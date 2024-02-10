@@ -11,6 +11,7 @@ class BarChartCubit extends Cubit<BarChartState> {
             tooltipXPosition: 0,
             tooltipYPosition: 0,
             maxYValue: 0,
+            scrollXPosition: 0,
           ),
         );
 
@@ -19,6 +20,7 @@ class BarChartCubit extends Cubit<BarChartState> {
     double? y,
     bool? show,
     double? maxYValue,
+    double? scrollXPosition,
   }) {
     emit(
       state.copyWith(
@@ -26,6 +28,7 @@ class BarChartCubit extends Cubit<BarChartState> {
         tooltipXPosition: x,
         tooltipYPosition: y,
         maxYValue: maxYValue,
+        scrollXPosition: scrollXPosition,
       ),
     );
   }
