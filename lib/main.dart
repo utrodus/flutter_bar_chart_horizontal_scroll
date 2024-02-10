@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bar_chart_horizontal_scroll/widget/bar_chart_screen.dart';
 import 'package:flutter_bar_chart_horizontal_scroll/widget/bar_chart_scroll.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         themeMode: ThemeMode.dark,
-        home: const BarChartScroll(),
+        home: const BarChartScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

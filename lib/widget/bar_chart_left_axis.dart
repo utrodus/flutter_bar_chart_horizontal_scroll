@@ -1,44 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bar_chart_horizontal_scroll/cubit/bar_chart_cubit.dart';
-import 'package:flutter_bar_chart_horizontal_scroll/data.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bar_chart_horizontal_scroll/data.dart';
 
-class BarChartScroll extends StatefulWidget {
-  const BarChartScroll({super.key});
+class BarChartLeftAxis extends StatelessWidget {
+  const BarChartLeftAxis({Key? key}) : super(key: key);
 
-  @override
-  State<BarChartScroll> createState() => _BarChartScrollState();
-}
-
-class _BarChartScrollState extends State<BarChartScroll> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _initBarChartScroll();
-  }
-
-  void _initBarChartScroll() {
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      _onScroll();
-    });
-  }
-
-  void _onScroll() => context.read<BarChartCubit>().showTooltip(
-        scrollXPosition: _scrollController.offset,
-      );
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _scrollController,
-      scrollDirection: Axis.horizontal,
-      clipBehavior: Clip.none,
-      padding: const EdgeInsets.only(right: 60),
+    return IgnorePointer(
+      ignoring: true,
       child: Container(
-        width: 40 * barChartdata.length.toDouble(),
         height: MediaQuery.of(context).size.height * 0.4,
         margin: const EdgeInsets.only(top: 30),
         child: BarChart(
@@ -51,29 +22,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
             alignment: BarChartAlignment.spaceBetween,
             barTouchData: BarTouchData(
               handleBuiltInTouches: false,
-              touchCallback: (FlTouchEvent event, barTouchResponse) {
-                if (barTouchResponse == null ||
-                    barTouchResponse.spot == null ||
-                    event is! FlTapUpEvent) {
-                  context.read<BarChartCubit>().showTooltip(
-                        show: false,
-                      );
-                  return;
-                }
-
-                /// print the position of the bar in the x axis
-                // print(barTouchResponse.spot!.offset.dx);
-
-                /// print the position of the bar in the y axis
-                // print(barTouchResponse.spot!.offset.dy);
-
-                context.read<BarChartCubit>().showTooltip(
-                      show: true,
-                      x: barTouchResponse.spot!.offset.dx,
-                      y: barTouchResponse.spot!.offset.dy,
-                      maxYValue: barTouchResponse.spot?.touchedRodData.toY,
-                    );
-              },
+              enabled: false,
               touchTooltipData: BarTouchTooltipData(
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
                   return null;
@@ -110,21 +59,8 @@ class _BarChartScrollState extends State<BarChartScroll> {
               ),
             ),
             gridData: FlGridData(
-              show: true,
-              checkToShowHorizontalLine: (value) => value % 5 == 0,
+              show: false,
               drawVerticalLine: false,
-              getDrawingHorizontalLine: (value) {
-                if (value == 0) {
-                  return FlLine(
-                    color: Colors.black.withOpacity(0.1),
-                    strokeWidth: 3,
-                  );
-                }
-                return FlLine(
-                  color: Colors.transparent,
-                  strokeWidth: 0.8,
-                );
-              },
             ),
             borderData: FlBorderData(
               show: false,
@@ -144,7 +80,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
   }
 
   Widget bottomTitles(double value, TitleMeta meta) {
-    const style = TextStyle(color: Colors.black, fontSize: 10);
+    const style = TextStyle(color: Colors.transparent, fontSize: 10);
     String text;
     switch (value.toInt()) {
       case 0:
@@ -195,13 +131,12 @@ class _BarChartScrollState extends State<BarChartScroll> {
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 18,
       child: Text(text, style: style),
     );
   }
 
   Widget leftTitles(double value, TitleMeta meta) {
-    var style = TextStyle(color: Colors.black.withOpacity(0.4), fontSize: 10);
+    var style = const TextStyle(color: Colors.black, fontSize: 10);
     String text;
     if (value == 0) {
       text = '0';
@@ -232,7 +167,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
         BarChartRodData(
           toY: value,
           width: 22,
-          color: isBarItemTop ? Colors.green : Colors.red,
+          color: Colors.transparent,
           borderRadius: isBarItemTop
               ? const BorderRadius.only(
                   topLeft: Radius.circular(6),

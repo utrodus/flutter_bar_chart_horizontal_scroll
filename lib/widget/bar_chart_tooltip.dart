@@ -19,8 +19,8 @@ class BarChartTooltip extends StatelessWidget {
             ? state.tooltipXPosition - state.scrollXPosition
             : state.tooltipXPosition,
         top: state.maxYValue > 0
-            ? state.tooltipYPosition - 22
-            : state.tooltipYPosition + 45,
+            ? state.tooltipYPosition - 35
+            : state.tooltipYPosition + 35,
         child: IgnorePointer(
           ignoring: true,
           child: Visibility(
@@ -48,7 +48,7 @@ class BarChartTooltip extends StatelessWidget {
                     height: 58,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withOpacity(0.75),
                         borderRadius: BorderRadius.circular(6)),
                     child: const FittedBox(
                       child: Column(
