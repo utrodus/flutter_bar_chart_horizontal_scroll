@@ -9,72 +9,82 @@ class BarChartLeftAxis extends StatelessWidget {
   Widget build(BuildContext context) {
     return IgnorePointer(
       ignoring: true,
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
-        margin: const EdgeInsets.only(top: 30),
-        child: BarChart(
-          swapAnimationDuration: const Duration(milliseconds: 150), // Optional
-          swapAnimationCurve: Curves.linear, //
-          BarChartData(
-            maxY: 20,
-            minY: -20,
-            // groupsSpace: 30,
-            alignment: BarChartAlignment.spaceBetween,
-            barTouchData: BarTouchData(
-              handleBuiltInTouches: false,
-              enabled: false,
-              touchTooltipData: BarTouchTooltipData(
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  return null;
-                },
-              ),
-            ),
-
-            titlesData: FlTitlesData(
-              show: true,
-              topTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: false,
-                ),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 32,
-                  getTitlesWidget: bottomTitles,
-                ),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: leftTitles,
-                  // interval: 5,
-                  reservedSize: 50,
-                ),
-              ),
-              rightTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: false,
-                ),
-              ),
-            ),
-            gridData: FlGridData(
-              show: false,
-              drawVerticalLine: false,
-            ),
-            borderData: FlBorderData(
-              show: false,
-            ),
-            barGroups: barChartdata.entries
-                .map(
-                  (e) => generateGroup(
-                    e.key,
-                    e.value[0],
-                  ),
-                )
-                .toList(),
+      child: Stack(
+        children: [
+          Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width * 0.1,
+            height: MediaQuery.of(context).size.height * 0.5,
           ),
-        ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            margin: const EdgeInsets.only(top: 30),
+            child: BarChart(
+              swapAnimationDuration:
+                  const Duration(milliseconds: 150), // Optional
+              swapAnimationCurve: Curves.linear, //
+              BarChartData(
+                maxY: 20,
+                minY: -20,
+                // groupsSpace: 30,
+                alignment: BarChartAlignment.spaceBetween,
+                barTouchData: BarTouchData(
+                  handleBuiltInTouches: false,
+                  enabled: false,
+                  touchTooltipData: BarTouchTooltipData(
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      return null;
+                    },
+                  ),
+                ),
+
+                titlesData: FlTitlesData(
+                  show: true,
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 32,
+                      getTitlesWidget: bottomTitles,
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: leftTitles,
+                      // interval: 5,
+                      reservedSize: 50,
+                    ),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: false,
+                    ),
+                  ),
+                ),
+                gridData: FlGridData(
+                  show: false,
+                  drawVerticalLine: false,
+                ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                barGroups: barChartdata.entries
+                    .map(
+                      (e) => generateGroup(
+                        e.key,
+                        e.value[0],
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

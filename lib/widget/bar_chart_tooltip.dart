@@ -16,8 +16,8 @@ class BarChartTooltip extends StatelessWidget {
 
       return Positioned(
         left: state.scrollXPosition > 0
-            ? state.tooltipXPosition - state.scrollXPosition
-            : state.tooltipXPosition,
+            ? state.tooltipXPosition - state.scrollXPosition + 35
+            : state.tooltipXPosition + 35,
         top: state.maxYValue > 0
             ? state.tooltipYPosition - 35
             : state.tooltipYPosition + 35,

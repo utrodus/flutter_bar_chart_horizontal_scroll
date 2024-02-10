@@ -13,6 +13,7 @@ class BarChartScroll extends StatefulWidget {
 
 class _BarChartScrollState extends State<BarChartScroll> {
   late ScrollController _scrollController;
+  double barChartItemWidth = 23.43;
 
   @override
   void initState() {
@@ -47,8 +48,6 @@ class _BarChartScrollState extends State<BarChartScroll> {
           BarChartData(
             maxY: 20,
             minY: -20,
-            // groupsSpace: 30,
-            alignment: BarChartAlignment.spaceBetween,
             barTouchData: BarTouchData(
               handleBuiltInTouches: false,
               touchCallback: (FlTouchEvent event, barTouchResponse) {
@@ -80,7 +79,6 @@ class _BarChartScrollState extends State<BarChartScroll> {
                 },
               ),
             ),
-
             titlesData: FlTitlesData(
               show: true,
               topTitles: AxisTitles(
@@ -210,7 +208,6 @@ class _BarChartScrollState extends State<BarChartScroll> {
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 20,
       child: Text(
         text,
         style: style,
@@ -231,7 +228,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
       barRods: [
         BarChartRodData(
           toY: value,
-          width: 22,
+          width: barChartItemWidth,
           color: isBarItemTop ? Colors.green : Colors.red,
           borderRadius: isBarItemTop
               ? const BorderRadius.only(
