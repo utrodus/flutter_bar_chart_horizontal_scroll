@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bar_chart_horizontal_scroll/cubit/bar_chart_cubit.dart';
 import 'package:flutter_bar_chart_horizontal_scroll/data.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bar_chart_notifier.dart';
 
 class BarChartScroll extends StatefulWidget {
-  const BarChartScroll({super.key});
+  final BarChartNotifier notifier;
+
+  const BarChartScroll({Key? key, required this.notifier}) : super(key: key);
 
   @override
   State<BarChartScroll> createState() => _BarChartScrollState();
@@ -28,9 +30,10 @@ class _BarChartScrollState extends State<BarChartScroll> {
     });
   }
 
-  void _onScroll() => context.read<BarChartCubit>().showTooltip(
+  void _onScroll() => widget.notifier.showTooltip(
         scrollXPosition: _scrollController.offset,
       );
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -43,8 +46,8 @@ class _BarChartScrollState extends State<BarChartScroll> {
         height: MediaQuery.of(context).size.height * 0.4,
         margin: const EdgeInsets.only(top: 30),
         child: BarChart(
-          swapAnimationDuration: const Duration(milliseconds: 150), // Optional
-          swapAnimationCurve: Curves.linear, //
+          swapAnimationDuration: const Duration(milliseconds: 150),
+          swapAnimationCurve: Curves.linear,
           BarChartData(
             maxY: 20,
             minY: -20,
@@ -54,24 +57,18 @@ class _BarChartScrollState extends State<BarChartScroll> {
                 if (barTouchResponse == null ||
                     barTouchResponse.spot == null ||
                     event is! FlTapUpEvent) {
-                  context.read<BarChartCubit>().showTooltip(
-                        show: false,
-                      );
+                  widget.notifier.showTooltip(
+                    show: false,
+                  );
                   return;
                 }
 
-                /// print the position of the bar in the x axis
-                // print(barTouchResponse.spot!.offset.dx);
-
-                /// print the position of the bar in the y axis
-                // print(barTouchResponse.spot!.offset.dy);
-
-                context.read<BarChartCubit>().showTooltip(
-                      show: true,
-                      x: barTouchResponse.spot!.offset.dx,
-                      y: barTouchResponse.spot!.offset.dy,
-                      maxYValue: barTouchResponse.spot?.touchedRodData.toY,
-                    );
+                widget.notifier.showTooltip(
+                  show: true,
+                  x: barTouchResponse.spot!.offset.dx,
+                  y: barTouchResponse.spot!.offset.dy,
+                  maxYValue: barTouchResponse.spot?.touchedRodData.toY,
+                );
               },
               touchTooltipData: BarTouchTooltipData(
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -97,7 +94,6 @@ class _BarChartScrollState extends State<BarChartScroll> {
                 sideTitles: SideTitles(
                   showTitles: true,
                   getTitlesWidget: leftTitles,
-                  // interval: 5,
                   reservedSize: 50,
                 ),
               ),
@@ -166,27 +162,21 @@ class _BarChartScrollState extends State<BarChartScroll> {
       case 6:
         text = 'Sun';
         break;
-
       case 7:
         text = 'Mon';
         break;
-
       case 8:
         text = 'Tue';
         break;
-
       case 9:
         text = 'Wed';
         break;
-
       case 10:
         text = 'Thu';
         break;
-
       case 11:
         text = 'Fri';
         break;
-
       default:
         text = '';
         break;

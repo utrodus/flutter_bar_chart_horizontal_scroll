@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bar_chart_horizontal_scroll/widget/bar_chart_notifier.dart';
 
 import 'bar_chart_tooltip.dart';
 import 'bar_chart_widget.dart';
@@ -13,6 +14,8 @@ class BarChartScreen extends StatefulWidget {
 }
 
 class _BarChartScreenState extends State<BarChartScreen> {
+  final barChartNotifier = BarChartNotifier();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,17 +35,22 @@ class _BarChartScreenState extends State<BarChartScreen> {
                 const SizedBox(width: 10),
                 Text(
                   "Bar Chart Scroll",
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
           ),
-          const Stack(
-            clipBehavior: Clip.none,
-            children: [
-              BarChartWidget(),
-              BarChartTooltip(),
-            ],
+          ValueListenableBuilder<BarChartStateNotifier>(
+            valueListenable: barChartNotifier,
+            builder: (context, state, _) {
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  BarChartWidget(notifier: barChartNotifier),
+                  BarChartTooltip(state: state),
+                ],
+              );
+            },
           ),
         ],
       ),

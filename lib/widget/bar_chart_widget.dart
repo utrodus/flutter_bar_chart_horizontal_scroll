@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bar_chart_horizontal_scroll/cubit/bar_chart_cubit.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bar_chart_left_axis.dart';
+import 'bar_chart_notifier.dart';
 import 'bar_chart_scroll.dart';
 import 'dashed_horizontal_line.dart';
 
 class BarChartWidget extends StatelessWidget {
-  const BarChartWidget({
-    Key? key,
-  }) : super(key: key);
+  final BarChartNotifier notifier;
+
+  const BarChartWidget({Key? key, required this.notifier}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const BarChartScroll(),
-
+        BarChartScroll(notifier: notifier),
         const BarChartLeftAxis(),
-
-        /// draw a horizontal line to the y-axis
-        BlocBuilder<BarChartCubit, BarChartState>(
-          builder: (context, state) {
+        ValueListenableBuilder<BarChartStateNotifier>(
+          valueListenable: notifier,
+          builder: (context, state, _) {
             return Positioned(
               left: MediaQuery.of(context).size.width * 0.1,
               top: state.tooltipYPosition + 30,
