@@ -20,9 +20,8 @@ class BarChartLeftAxis extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.4,
             margin: const EdgeInsets.only(top: 30),
             child: BarChart(
-              swapAnimationDuration:
-                  const Duration(milliseconds: 150), // Optional
-              swapAnimationCurve: Curves.linear, //
+              duration: const Duration(milliseconds: 150), // Optional
+              curve: Curves.linear,
               BarChartData(
                 maxY: 20,
                 minY: -20,
@@ -40,7 +39,7 @@ class BarChartLeftAxis extends StatelessWidget {
 
                 titlesData: FlTitlesData(
                   show: true,
-                  topTitles: AxisTitles(
+                  topTitles: const AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: false,
                     ),
@@ -60,13 +59,13 @@ class BarChartLeftAxis extends StatelessWidget {
                       reservedSize: 50,
                     ),
                   ),
-                  rightTitles: AxisTitles(
+                  rightTitles: const AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: false,
                     ),
                   ),
                 ),
-                gridData: FlGridData(
+                gridData: const FlGridData(
                   show: false,
                   drawVerticalLine: false,
                 ),

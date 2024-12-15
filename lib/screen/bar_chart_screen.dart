@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'bar_chart_tooltip.dart';
-import 'bar_chart_widget.dart';
+import '../widget/bar_chart_tooltip.dart';
+import '../widget/bar_chart_widget.dart';
 
 class BarChartScreen extends StatefulWidget {
   const BarChartScreen({

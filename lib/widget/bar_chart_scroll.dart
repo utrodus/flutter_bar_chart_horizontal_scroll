@@ -43,8 +43,8 @@ class _BarChartScrollState extends State<BarChartScroll> {
         height: MediaQuery.of(context).size.height * 0.4,
         margin: const EdgeInsets.only(top: 30),
         child: BarChart(
-          swapAnimationDuration: const Duration(milliseconds: 150), // Optional
-          swapAnimationCurve: Curves.linear, //
+          duration: const Duration(milliseconds: 150), // Optional
+          curve: Curves.linear,
           BarChartData(
             maxY: 20,
             minY: -20,
@@ -81,7 +81,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
             ),
             titlesData: FlTitlesData(
               show: true,
-              topTitles: AxisTitles(
+              topTitles: const AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: false,
                 ),
@@ -101,7 +101,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
                   reservedSize: 50,
                 ),
               ),
-              rightTitles: AxisTitles(
+              rightTitles: const AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: false,
                 ),
@@ -118,7 +118,7 @@ class _BarChartScrollState extends State<BarChartScroll> {
                     strokeWidth: 3,
                   );
                 }
-                return FlLine(
+                return const FlLine(
                   color: Colors.transparent,
                   strokeWidth: 0.8,
                 );

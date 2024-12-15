@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bar_chart_horizontal_scroll/widget/bar_chart_screen.dart';
-import 'package:flutter_bar_chart_horizontal_scroll/widget/bar_chart_scroll.dart';
+import 'package:flutter_bar_chart_horizontal_scroll/screen/bar_chart_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/bar_chart_cubit.dart';
